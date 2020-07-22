@@ -31,22 +31,23 @@
     -moz-user-select: none;
 }
 
+/* Start and End Nodes */
 .pathfinder-node.start{
     background-color: green;
 }
-
 .pathfinder-node.end{
     background-color: red;
 }
 
+/* Hover Effect */
 .pathfinder-node:hover:not(.start):not(.end){
     background-color: #eee;
 }
 
+/* Borders */
 .pathfinder-node{
     border: 3px solid #404040;
 }
-
 .pathfinder-node:nth-child(-n + 8){
     border-top: 6px solid #404040;
 }
