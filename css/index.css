@@ -1,0 +1,48 @@
+#pathfinder{
+    width: 500px;
+    margin: 0 auto;
+    border: 1px solid #000;
+}
+
+#pathfinder-info{
+    padding: 15px;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #eee;
+}
+
+#pathfinder-nodes{
+    height: 500px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+.pathfinder-node{
+    width: 20%;
+    height: 20%;
+    display: flex;
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+    -moz-user-select: none;
+}
+
+.pathfinder-node.start{
+    background-color: green;
+}
+
+.pathfinder-node.end{
+    background-color: red;
+}
+
+.pathfinder-node:hover:not(.start):not(.end){
+    background-color: #eee;
+}
+
+.pathfinder-node{
+    border: 1px solid black;
+}

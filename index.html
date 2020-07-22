@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A* Pathfinding | Vue</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div id="pathfinder">
+        <div id="pathfinder-info">
+            {{ infoMessage }}
+        </div>
+        <div id="pathfinder-nodes">
+            <div
+                v-for="(node, i) in grid.nodes"
+                v-bind:class="{start: node.is_Start, end: node.is_End}"
+                class="pathfinder-node">
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="js/Node.js"></script>
+    <script src="js/Grid.js"></script>
+    <script>
+
+        let grid = new Grid();
+
+        let pathfinderGrid = new Vue({
+            el: '#pathfinder',
+            data: {
+                grid
+            },
+            computed:{
+                infoMessage: function(){
+                    return "Nothing for now"
+                }
+            }
+        })
+    </script>
+</body>
+</html>
