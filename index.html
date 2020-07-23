@@ -14,10 +14,18 @@
         <div id="pathfinder-nodes">
             <div
                 v-for="(node, i) in grid.nodes"
-                v-bind:class="{start: node.is_Start, end: node.is_End}"
+                v-on:click="grid.toggleWall(i)"
+                v-bind:class="{start: node.is_Start, end: node.is_End, wall: node.is_Wall}"
                 class="pathfinder-node">
+                {{ node.value }}
             </div>
         </div>
+        <button 
+            id="pathfinder-search-button"
+            v-on:click="grid.startSearch()"
+            v-bind:disabled="isDisabled">
+            Start
+        </button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -34,7 +42,15 @@
             },
             computed:{
                 infoMessage: function(){
-                    return "Nothing for now"
+                    if(grid.is_Running){
+                        return "Searching...";
+                    }
+                    else{
+                        return "Press the Start button to begin searching";
+                    }
+                },
+                isDisabled: function(){
+                    return grid.is_Running;
                 }
             }
         })

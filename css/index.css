@@ -4,6 +4,7 @@
     border: 1px solid #000;
 }
 
+/* Info Bar */
 #pathfinder-info{
     padding: 15px;
     font-family: sans-serif;
@@ -13,35 +14,82 @@
     background-color: #eee;
 }
 
+/* All Nodes */
 #pathfinder-nodes{
     height: 500px;
     display: flex;
     flex-wrap: wrap;
     padding: 25px;
+    text-align: center;
     box-sizing: border-box;
 }
 
+/* Single Node */
 .pathfinder-node{
     width: 12.5%;
     height: 12.5%;
     display: flex;
     box-sizing: border-box;
     cursor: pointer;
+    font-family: sans-serif;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    font-weight: bold;
     user-select: none;
     -moz-user-select: none;
 }
 
+/* Start Search Button */
+#pathfinder-search-button{
+    width: 100%;
+    padding: 15px;
+    border: none;
+    font-family: sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #eee;
+    cursor: pointer;
+}
+#pathfinder-search-button:hover{
+    background-color: #999;
+}
+#pathfinder-search-button:disabled,
+#pathfinder-search-button[disabled]{
+    background-color: #999;
+    color: red;
+}
+
 /* Start and End Nodes */
 .pathfinder-node.start{
-    background-color: green;
+    color: green;
 }
 .pathfinder-node.end{
+    color: red;
+}
+
+/* Open and Closed Nodes */
+.pathfinder-node.open{
+    background-color: green;
+}
+.pathfinder-node.closed{
     background-color: red;
 }
 
+/* Wall Nodes */
+.pathfinder-node.wall{
+    background-color: black;
+}
+
+/* Solution Nodes */
+.pathfinder-node.solution{
+    background-color: #6666FF;
+}
+
 /* Hover Effect */
-.pathfinder-node:hover:not(.start):not(.end){
-    background-color: #eee;
+.pathfinder-node:hover:not(.start):not(.end):not(.wall){
+    background-color: #808080;
 }
 
 /* Borders */

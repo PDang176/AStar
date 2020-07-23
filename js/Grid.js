@@ -1,6 +1,9 @@
 class Grid{
     constructor(){
+        this.is_Running = false;
         this.nodes = new Array(64).fill().map(n => new Node());
+        this.openSet = [];
+        this.closedSet = [];
         this.initializeNodes();
     }
 
@@ -14,6 +17,19 @@ class Grid{
             }
         }
         this.nodes[0].is_Start = true;
+        this.nodes[0].value = "Start";
         this.nodes[63].is_End = true;
+        this.nodes[63].value = "End";
+    }
+
+    toggleWall(i){
+        if(!(this.nodes[i].is_Start || this.nodes[i].is_End)){
+            this.nodes[i].is_Wall = this.nodes[i].is_Wall ? false : true;
+        }
+    }
+
+    startSearch(){
+        this.is_Running = true;
+        
     }
 }
