@@ -4,10 +4,12 @@ class Node{
         this.x = null;
         this.y = null;
 
-        // If node is start point, end point, or a wall
+        // If node is start point, end point, wall, open, or closed
         this.is_Start = false;
         this.is_End = false;
         this.is_Wall = false;
+        this.is_Open = false;
+        this.is_Closed = false;
         this.value = "";
 
         // g = path from start, h = heuristic cost to end, f = g + h
@@ -17,5 +19,9 @@ class Node{
 
         // Previous node
         this.prev = null;
+    }
+
+    calculateFCost(){
+        this.f = this.g + this.h;
     }
 }

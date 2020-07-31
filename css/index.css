@@ -99,7 +99,7 @@
 .pathfinder-node:nth-child(-n + 8){
     border-top: 6px solid #404040;
 }
-.pathfinder-node:nth-child(n + 56):nth-child(-n + 64){
+.pathfinder-node:nth-child(n + 57):nth-child(-n + 64){
     border-bottom: 6px solid #404040;
 }
 .pathfinder-node:nth-child(8n){

@@ -15,7 +15,7 @@
             <div
                 v-for="(node, i) in grid.nodes"
                 v-on:click="grid.toggleWall(i)"
-                v-bind:class="{start: node.is_Start, end: node.is_End, wall: node.is_Wall}"
+                v-bind:class="{start: node.is_Start, end: node.is_End, wall: node.is_Wall, open: node.is_Open, closed: node.is_Closed}"
                 class="pathfinder-node">
                 {{ node.value }}
             </div>
