@@ -1,6 +1,17 @@
 class Grid{
     constructor(){
         this.is_Running = false;
+        this.setting_Start = false;
+        this.setting_End = false;
+        this.nodes = null;
+        this.startIndex = -1;
+        this.endIndex = -1;
+        this.openSet = [];
+        this.initializeNodes();
+    }
+
+    resetGrid(){
+        this.is_Running = false;
         this.nodes = null;
         this.startIndex = null;
         this.endIndex = null;
@@ -28,12 +39,66 @@ class Grid{
         // End Node
         this.nodes[63].is_End = true;
         this.nodes[63].value = "End";
-        this.endIndex = 63
+        this.endIndex = 63;
 
         // Start Node g, h, f costs
         this.nodes[0].g = 0;
         this.nodes[0].h = this.calculateHCost(this.nodes[0], this.nodes[63]);
         this.nodes[0].calculateFCost();
+    }
+
+    onClick(i){
+        if(this.setting_Start){
+            this.setStartPos(i);
+        }
+        else if(this.setting_End){
+            this.setEndPos(i);
+        }
+        else{
+            this.toggleWall(i);
+        }
+    }
+
+    settingStart(){
+        this.setting_Start = this.setting_Start ? false : true;
+    }
+
+    setStartPos(i){
+        if(this.startIndex !== -1){
+            this.nodes[this.startIndex].is_Start = false;
+            this.nodes[this.startIndex].value = "";
+        }
+        if(this.nodes[i].is_Wall){
+            this.nodes[i].is_Wall = false;
+        }
+        if(this.nodes[i].is_End){
+            this.nodes[i].is_End = false;
+            this.endIndex = -1;
+        }
+        this.nodes[i].is_Start = true;
+        this.nodes[i].value = "Start";
+        this.startIndex = i;
+    }
+
+    settingEnd(){
+        this.setting_End = this.setting_End ? false : true;
+    }
+
+    setEndPos(i){
+        if(this.endIndex !== -1){
+            this.nodes[this.endIndex].is_End = false;
+            this.nodes[this.endIndex].value = "";
+        }
+        if(this.nodes[i].is_Wall){
+            this.nodes[i].is_Wall = false;
+        }
+        if(this.nodes[i].is_Start){
+            this.nodes[i].is_Start = false;
+            this.startIndex = -1;
+        }
+        this.nodes[i].is_End = true;
+        this.nodes[i].value = "End";
+        this.endIndex = i;
     }
 
     toggleWall(i){
@@ -80,8 +145,68 @@ class Grid{
         }
     }
 
-    calculatePath(end){
-        console.log("reached end");
+    calculatePath(i){
+        this.nodes[i].is_Path = true;
+        if(i !== this.startIndex){
+            this.calculatePath(this.nodes[i].prev);
+        }
+    }
+
+    algorithm(){
+        // Check lowest F Cost in open set
+        let low = this.lowestFCost();
+        let curr = this.openSet[low];
+
+        // Move the current node to closed set
+        this.openSet.splice(low, 1);
+        this.nodes[curr].is_Open = false;
+        this.nodes[curr].is_Closed = true;
+
+        // If at the end node calculate the path then break
+        if(curr === this.endIndex){
+            this.calculatePath(this.endIndex);
+            this.is_Running = false;
+            return;
+        }
+
+        // Add neighbors to open set
+        if((curr + 1) % 8 !== 0){ // Right one step
+            this.addNeighbors(curr + 1, curr, STRAIGHT_COST);
+        }
+        if(curr % 8 !== 0){ // Left one step
+            this.addNeighbors(curr - 1, curr, STRAIGHT_COST);
+        }
+        if(curr >= 8){ // Up one step
+            this.addNeighbors(curr - 8, curr, STRAIGHT_COST);
+        }
+        if(curr <= 55){ // Down one step
+            this.addNeighbors(curr + 8, curr, STRAIGHT_COST);
+        }
+        if((curr + 1) % 8 !== 0 && curr >= 8){ // Right-Up one step
+            this.addNeighbors(curr - 7, curr, DIAGONAL_COST);
+        }
+        if((curr + 1) % 8 !== 0 && curr <= 55){ // Right-Down one step
+            this.addNeighbors(curr + 9, curr, DIAGONAL_COST);
+        }
+        if(curr % 8 !== 0 && curr >= 8){ // Left-Up one step
+            this.addNeighbors(curr - 9, curr, DIAGONAL_COST);
+        }
+        if(curr % 8 !== 0 && curr <= 55){ // Left-Down one step
+            this.addNeighbors(curr + 7, curr, DIAGONAL_COST);
+        }
+    }
+
+    timeoutLoop(){
+        var grid = this;
+        setTimeout(function(){
+            grid.algorithm();
+            if(grid.openSet.length > 0 && grid.is_Running){
+                grid.timeoutLoop();
+            }
+            else{
+                grid.is_Running = false;
+            }
+        }, 250);
     }
 
     startSearch(){
@@ -89,50 +214,7 @@ class Grid{
         this.nodes[this.startIndex].is_Open = true;
         this.openSet = [this.startIndex];
 
-        while(this.openSet.length > 0){
-
-            // Check lowest F Cost in open set
-            let low = this.lowestFCost();
-            let curr = this.openSet[low];
-
-            // Move the current node to closed set
-            this.openSet.splice(low, 1);
-            this.nodes[curr].is_Open = false;
-            this.nodes[curr].is_Closed = true;
-
-            // If at the end node calculate the path then break
-            if(curr === this.endIndex){
-                this.calculatePath(this.endIndex);
-                break;
-            }
-
-            // Add neighbors to open set
-            if((curr + 1) % 8 !== 0){ // Right one step
-                this.addNeighbors(curr + 1, curr, STRAIGHT_COST);
-            }
-            if(curr % 8 !== 0){ // Left one step
-                this.addNeighbors(curr - 1, curr, STRAIGHT_COST);
-            }
-            if(curr >= 8){ // Up one step
-                this.addNeighbors(curr - 8, curr, STRAIGHT_COST);
-            }
-            if(curr <= 55){ // Down one step
-                this.addNeighbors(curr + 8, curr, STRAIGHT_COST);
-            }
-            if((curr + 1) % 8 !== 0 && curr >= 8){ // Right-Up one step
-                this.addNeighbors(curr - 7, curr, DIAGONAL_COST);
-            }
-            if((curr + 1) % 8 !== 0 && curr <= 55){ // Right-Down one step
-                this.addNeighbors(curr + 9, curr, DIAGONAL_COST);
-            }
-            if(curr % 8 !== 0 && curr >= 8){ // Left-Up one step
-                this.addNeighbors(curr - 9, curr, DIAGONAL_COST);
-            }
-            if(curr % 8 !== 0 && curr <= 55){ // Left-Down one step
-                this.addNeighbors(curr + 7, curr, DIAGONAL_COST);
-            }
-        }
-        this.is_Running = false;
+        this.timeoutLoop();
     }
 }
 

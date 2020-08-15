@@ -7,25 +7,60 @@
     <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
-    <div id="pathfinder">
-        <div id="pathfinder-info">
-            {{ infoMessage }}
-        </div>
-        <div id="pathfinder-nodes">
-            <div
-                v-for="(node, i) in grid.nodes"
-                v-on:click="grid.toggleWall(i)"
-                v-bind:class="{start: node.is_Start, end: node.is_End, wall: node.is_Wall, open: node.is_Open, closed: node.is_Closed}"
-                class="pathfinder-node">
-                {{ node.value }}
+    <div id="container">
+        <div id="pathfinder">
+            <div id="pathfinder-info">
+                {{ infoMessage }}
+            </div>
+            <div id="pathfinder-nodes">
+                <div
+                    v-for="(node, i) in grid.nodes"
+                    v-on:click="grid.onClick(i)"
+                    v-bind:class="{ start: node.is_Start, 
+                                    end: node.is_End, 
+                                    wall: node.is_Wall, 
+                                    open: node.is_Open, 
+                                    closed: node.is_Closed,
+                                    solution: node.is_Path}"
+                    class="pathfinder-node">
+                    {{ node.value }}
+                </div>
             </div>
         </div>
-        <button 
-            id="pathfinder-search-button"
-            v-on:click="grid.startSearch()"
-            v-bind:disabled="isDisabled">
-            Start
-        </button>
+        <div id="sidebar">
+            <div id="pathfinder-buttons">
+                <button 
+                    id="pathfinder-search-button"
+                    v-on:click="grid.startSearch()"
+                    v-bind:disabled="isDisabled">
+                    Start
+                </button>
+                <div id="pathfinder-checkboxes">
+                    <div>
+                        <label class="checkbox" id="checkbox-start">Start
+                            <input type="checkbox"
+                                v-on:click="grid.settingStart()"
+                                v-bind:disabled="checkboxDisabledStart">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="checkbox" id="checkbox-end">End
+                            <input type="checkbox" 
+                                v-on:click="grid.settingEnd()"
+                                v-bind:disabled="checkboxDisabledEnd">
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>
+                </div>
+                <button
+                    id="pathfinder-reset-button"
+                    v-on:click="grid.resetGrid()"
+                    v-bind:disabled="isDisabled">
+                    Reset
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -36,7 +71,7 @@
         let grid = new Grid();
 
         let pathfinderGrid = new Vue({
-            el: '#pathfinder',
+            el: '#container',
             data: {
                 grid
             },
@@ -45,12 +80,24 @@
                     if(grid.is_Running){
                         return "Searching...";
                     }
+                    else if(grid.setting_Start){
+                        return "Press any square to set as Start";
+                    }
+                    else if(grid.setting_End){
+                        return "Press any square to set as End";
+                    }
                     else{
                         return "Press the Start button to begin searching";
                     }
                 },
                 isDisabled: function(){
-                    return grid.is_Running;
+                    return grid.is_Running || grid.setting_Start || grid.setting_End;
+                },
+                checkboxDisabledStart: function(){
+                    return grid.is_Running || grid.setting_End;
+                },
+                checkboxDisabledEnd:function(){
+                    return grid.is_Running || grid.setting_Start;
                 }
             }
         })
